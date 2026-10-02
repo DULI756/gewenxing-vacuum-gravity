@@ -1,0 +1,340 @@
+<html style="margin:0;padding:0;">
+<title>质子 10 波源动态图（扭曲立方体 8 源 + 上下轴源，连续两相波带）</title>
+<div style="font-family:'Microsoft YaHei',sans-serif;max-width:900px;margin:0 auto;padding:12px;box-sizing:border-box;color:#1a1a2e;">
+  <h2 style="margin:0 0 4px;font-size:20px;">质子 10 波源动态图</h2>
+  <div style="font-size:13px;color:#555;margin-bottom:8px;line-height:1.7;">
+    <strong>空间结构</strong>：中间 8 源构成<b>正立方体、上下两片面 45° 扭曲</b>（四方反棱柱）；上下各加 1 源即<b>自旋轴</b>。源间距已缩至 <b>&lt;0.67 fm</b>（约 0.55–0.63 fm）。
+    <b>8 源绕中心轴旋转</b>（转速=轴自转的 1/2，即轴自转 ω<sub>ax</sub>=2ω<sub>m</sub>）；白点=相位。
+    每源连续发射两相波带：<strong style="color:#ffd678;">能量层 55.4%（τ_b，亮）</strong> → <strong style="color:#4a9de0;">真空0压层 44.6%（τ_i，暗）</strong>，紧贴交替无间断。<b>10 源同频同相</b>：能量层一起爆发、间歇层一起进入（白点指向同一相位角）。
+    10 波的球状离散层交叉形成<b>水波干涉场</b>（高能交叉面/线/点，随波前沿涟漪般外扩，可开关）；两能量层(磁场层)交叉处按<b>磁压</b>挤压形变（拉长亮椭圆，随相位脉动）；<b>亮度衰减律</b>：能量层 1/r³、真空层 1/r²（以 0.1 fm 为网格基准、第一能量层归一），10源中心最亮。尺度参考：能量层 0.67、真空层 0.93 fm。
+    中心黄白色光晕 = <strong>硬核 + 指数尾电荷壳层</strong>（10 源为点状硬核，外层光滑指数云 e^(−r/a) 承载主体电荷，中心尖峰 + 长尾）。
+    默认<b>俯视图</b>：中心 1 轴源 + 周围 8 等距源（共 9 个可见）；拖动<b>俯仰滑块</b>可看立体结构。<b>频率滑块</b>只加快球状层的发散速度，<b>不改变能量/间歇层大小</b>（层周期 > 源间距）。
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px;">
+    <button id="btnPlay" style="height:44px;min-width:96px;font-size:14px;cursor:pointer;">暂停</button>
+    <button id="btnReset" style="height:44px;min-width:96px;font-size:14px;cursor:pointer;">重置</button>
+    <label style="font-size:13px;display:flex;align-items:center;gap:6px;">
+      转速 <input id="speed" type="range" min="0.1" max="3" step="0.1" value="1" style="width:130px;height:44px;">
+      <span id="speedVal" style="min-width:30px;">1.0×</span>
+    </label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:6px;">
+      频率 <input id="freq" type="range" min="0.2" max="20" step="0.1" value="1" style="width:130px;height:44px;">
+      <span id="freqVal" style="min-width:30px;">1.0×</span>
+    </label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:6px;">
+      俯仰 <input id="view" type="range" min="0" max="1.5" step="0.05" value="0" style="width:130px;height:44px;">
+      <span id="viewVal" style="min-width:40px;">俯视</span>
+    </label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:6px;">
+      <input id="chkWave" type="checkbox" checked style="width:22px;height:22px;"> 显示波带
+    </label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:6px;">
+      <input id="chkCross" type="checkbox" checked style="width:22px;height:22px;"> 显示交叉点
+    </label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:6px;">
+      <input id="chkRipple" type="checkbox" checked style="width:22px;height:22px;"> 水波干涉(交叉面/线/点)
+    </label>
+  </div>
+  <canvas id="cv" width="820" height="640" style="width:100%;height:auto;background:#0a0e1a;border:1px solid #222;border-radius:8px;display:block;"></canvas>
+  <div style="font-size:12px;color:#777;margin-top:6px;line-height:1.6;">
+    蓝点=8 源（绕轴旋转，转速=轴自转1/2）；青点=中心轴源（自转）；白点=相位；亮带=能量层、暗带=真空0压层，连续交替。能量层亮度按 1/r³ 衰减、真空层按 1/r²（更慢），10源中心最亮；中心黄白光晕=硬核+指数尾电荷壳层。辅助线已去除；本图为理论自洽示意，不等同于结构实验证实。
+  </div>
+</div>
+<script>
+(function(){
+try{
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+  var btnPlay=document.getElementById('btnPlay'), btnReset=document.getElementById('btnReset');
+  var speed=document.getElementById('speed'), speedVal=document.getElementById('speedVal');
+  var freq=document.getElementById('freq'), freqVal=document.getElementById('freqVal');
+  var chkWave=document.getElementById('chkWave');
+  var chkCross=document.getElementById('chkCross');
+  var chkRipple=document.getElementById('chkRipple');
+  var viewEl=document.getElementById('view'), viewVal=document.getElementById('viewVal');
+  var W=cv.width, H=cv.height, CX=W/2, CY=H/2;
+  var tilt=0.0;   // 0=俯视：中心1轴源 + 周围8等距；拖动俯仰可看立体
+  var thm=0;      // 8 源绕轴角（顶层作用域，供 draw 与 drawCrossField 共享）
+  var running=true, t=0, speedMul=1, freqMul=1;
+
+  // ---- 10 源结构：中间 8 源 = 上下方片 45° 扭曲（反棱柱）；上下各 1 轴源 ----
+  var R0=30, h=20, axH=46;   // 10 源紧凑，占质子中心小区域；层周期远大于源间距
+  var SQ=Math.SQRT1_2;
+  // 8 源 (索引0-3 下面 z=-h; 4-7 上面 z=+h)
+  var mid3=[];  // [x,y] 未旋转的基准位置
+  var midZ=[-h,-h,-h,-h, h,h,h,h];
+  for(var i=0;i<4;i++){ var a=i*Math.PI/2; mid3.push([R0*Math.cos(a), R0*Math.sin(a)]); }
+  for(var i=0;i<4;i++){ var a=(i+0.5)*Math.PI/2; mid3.push([R0*Math.cos(a), R0*Math.sin(a)]); }
+  // 轴源
+  var axisZ=[axH,-axH];
+
+  function rot(p,th){ return [p[0]*Math.cos(th)-p[1]*Math.sin(th), p[0]*Math.sin(th)+p[1]*Math.cos(th)]; }
+  function project(p){
+    var y2=p[1]*Math.cos(tilt)-p[2]*Math.sin(tilt);
+    var z2=p[1]*Math.sin(tilt)+p[2]*Math.cos(tilt);
+    return [CX+p[0], CY+y2, z2];
+  }
+
+  // ---- 连续两相波带：能量层55.4%亮 + 真空层44.6%暗，紧贴交替、随半径衰减 ----
+  var TAU_B=0.554, LAMBDA=64, RMAX=170, PROP=35;
+  var OMEGA_M=0.6;   // 8 源绕中心轴转速；轴自转=2×（用户给定 1/2 关系）
+  // ---- 亮度物理衰减：能量层 1/r³、真空层 1/r²，10源(中心)最亮，越外越暗 ----
+  var PXFM=64/1.868;           // 像素→fm：LAMBDA=64px ↔ λ₀=1.868 fm
+  var RREF_FM=0.67;            // 亮度归一基准=第一能量层
+  function ed(rFm){ return Math.min(1, Math.pow(RREF_FM/rFm,3)); }  // 能量层衰减 1/r³
+  function vd(rFm){ return Math.min(1, Math.pow(RREF_FM/rFm,2)); }  // 真空层衰减 1/r²(更慢)
+  function band(px,py,a,b,color){
+    if(b<=a) return;
+    var mid=(a+b)/2, w=b-a;
+    ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=w;
+    ctx.arc(px,py,mid,0,6.283); ctx.stroke();
+  }
+  function drawTrain(px,py,srcIdx){
+    var off=(t*PROP*speedMul*freqMul) % LAMBDA;   // 层大小固定；频率只加快发散速度
+    var dc=Math.hypot(px-CX,py-CY)/PXFM;          // 该源距中心(fm)
+    var r=off;
+    while(r<RMAX){
+      var dFm=dc+r/PXFM;                          // 该环距中心(fm)：源距+环半径
+      var e0=Math.max(0,Math.min(RMAX,r));
+      var e1=Math.min(RMAX,r+TAU_B*LAMBDA);
+      if(e1>e0) band(px,py,e0,e1,'rgba(255,214,120,'+(0.5*ed(dFm)).toFixed(3)+')');
+      var v0=Math.max(0,Math.min(RMAX,r+TAU_B*LAMBDA));
+      var v1=Math.min(RMAX,r+LAMBDA);
+      if(v1>v0) band(px,py,v0,v1,'rgba(74,157,224,'+(0.26*vd(dFm)).toFixed(3)+')');
+      r+=LAMBDA;
+    }
+  }
+
+  // ---- 硬核 + 指数尾电荷壳层：10 源是点状硬核(权小但尖锐)，外层光滑指数云 e^(-r/a) 承载主体电荷 ----
+  // 电荷壳：中心尖峰(硬核) + 指数长尾(壳)，亮度 ∝ e^(-r/a)，a≈0.24fm 对应 rms≈0.81fm，10源中心最亮
+  function drawChargeShell(){
+    var aPx=0.24*PXFM;                       // 指数衰减长 a=0.24 fm → 像素
+    var maxPx=0.81*PXFM*2.1;                 // 壳层可视范围 ~2×rms
+    var g=ctx.createRadialGradient(CX,CY,0,CX,CY,maxPx);
+    // 归一：r=0 最亮(硬核尖峰)，随 e^(-r/a) 衰减(指数尾壳)
+    g.addColorStop(0.00,'rgba(255,238,170,0.55)');   // 中心硬核尖峰
+    g.addColorStop(aPx/maxPx*1.0,'rgba(255,225,150,0.30)');
+    g.addColorStop(aPx/maxPx*2.0,'rgba(255,215,140,0.16)');
+    g.addColorStop(aPx/maxPx*3.2,'rgba(255,205,130,0.08)');
+    g.addColorStop(0.85,'rgba(255,195,120,0.03)');
+    g.addColorStop(1.00,'rgba(255,190,115,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(CX,CY,maxPx,0,6.283); ctx.fill();
+  }
+
+  // ---- 10 波相干干涉 → 特殊交叉点（赤道面 z=0 场强增强区） ----
+  var K=2*Math.PI/LAMBDA;
+  function srcPos3D(i,thmNow){
+    if(i<8){ var r=rot(mid3[i],thmNow); return [r[0],r[1],midZ[i]]; }
+    return [0,0,axisZ[i-8]];
+  }
+  function drawCrossField(){
+    var NR=20, NT=30, rhoMax=120;
+    var thmNow=thm;   // 交叉场随旋转源同步
+    var pts=[];
+    for(var n=0;n<NR;n++){
+      var rho=3+n*(rhoMax-3)/NR;
+      for(var a=0;a<NT;a++){
+        var th=2*Math.PI*a/NT;
+        var px=rho*Math.cos(th), py=rho*Math.sin(th);
+        var re=0, im=0;
+        for(var i=0;i<10;i++){
+          var s=srcPos3D(i,thmNow);
+          var dx=px-s[0], dy=py-s[1];
+          var rr=Math.sqrt(dx*dx+dy*dy+s[2]*s[2])+1e-3;
+          var ph=K*(rr - t*PROP*speedMul*freqMul);
+          re+=Math.cos(ph)/rr; im+=Math.sin(ph)/rr;
+        }
+        pts.push({rho:rho,th:th,F:Math.sqrt(re*re+im*im)});
+      }
+    }
+    var Fmax=0; for(var p=0;p<pts.length;p++) if(pts[p].F>Fmax) Fmax=pts[p].F;
+    if(Fmax<=0) return;
+    for(var p=0;p<pts.length;p++){
+      if(pts[p].F > 0.42*Fmax){
+        var q=project([pts[p].rho*Math.cos(pts[p].th), pts[p].rho*Math.sin(pts[p].th), 0]);
+        var a=(pts[p].F/Fmax-0.42)*2.2; if(a>1) a=1; if(a<0) a=0;
+        a*=ed(pts[p].rho/PXFM);
+        var g=ctx.createRadialGradient(q[0],q[1],0,q[0],q[1],7);
+        g.addColorStop(0,'rgba(255,255,190,'+(0.7*a).toFixed(3)+')');
+        g.addColorStop(1,'rgba(255,255,190,0)');
+        ctx.fillStyle=g; ctx.beginPath(); ctx.arc(q[0],q[1],7,0,6.283); ctx.fill();
+      }
+    }
+  }
+
+  // ---- 水波干涉层：10 源球状离散层（能量层亮55.4%+间歇层暗44.6%交替）叠加，交叉处更亮+形变 ----
+  // 每个源发扩散的两相球壳；几个能量层相叠(交叉) → 明显更亮，层在交叉处鼓起(形变)
+  var rip=document.createElement('canvas'), ripCtx=rip.getContext('2d');
+  var RGW=190, RGH=150; rip.width=RGW; rip.height=RGH;
+  var TW=0.07;  // 层边界软边宽度(相位分数)
+  function drawRipple(){
+    var sp=[];
+    for(var i=0;i<8;i++){ var r=rot(mid3[i],thm); var q=project([r[0],r[1],midZ[i]]); sp.push([q[0],q[1]]); }
+    for(var i=0;i<2;i++){ var q=project([0,0,axisZ[i]]); sp.push([q[0],q[1]]); }
+    var scx=W/RGW, scy=H/RGH;
+    var Ke=K;                               // 层大小固定（频率不改变能量/间歇层尺寸）
+    var omega=K*PROP*speedMul*freqMul;      // 频率↑ → 涟漪扩散更快
+    var tphase=omega*t;
+    // 第一遍：算每像素 E(相叠能量层数) 与贡献最大的两个源
+    var Em=[], tp=[];
+    for(var j=0;j<RGH;j++){
+      for(var i=0;i<RGW;i++){
+        var px=i*scx+scx/2, py=j*scy+scy/2;
+        var E=0, anyNear=false, best=-1,be=0,best2=-1,be2=0;
+        for(var s=0;s<sp.length;s++){
+          var dx=px-sp[s][0], dy=py-sp[s][1];
+          var rr=Math.sqrt(dx*dx+dy*dy)+1e-3;
+          var rn=rr/RMAX; if(rn>1.12) continue;
+          anyNear=true;
+          var ph=(Ke*rr - tphase) % (2*Math.PI); if(ph<0) ph+=2*Math.PI;  // 同频同相：无源间相位差
+          var f=ph/(2*Math.PI), tbe=TAU_B;
+          var e;
+          if(f<=tbe){ e=1; if(f<TW) e=f/TW; if(tbe-f<TW) e=(tbe-f)/TW; }
+          else{ var d=f-tbe; e=d<TW?(TW-d)/TW:0; }
+          E+=e;
+          if(e>be){ best2=best; be2=be; best=s; be=e; }
+          else if(e>be2){ best2=s; be2=e; }
+        }
+        Em.push(anyNear?E:-1);
+        tp.push([best,best2]);
+      }
+    }
+    // 第二遍：写两相层图像
+    var img=ripCtx.createImageData(RGW,RGH);
+    for(var j=0;j<RGH;j++){
+      for(var i=0;i<RGW;i++){
+        var idxE=j*RGW+i, E=Em[idxE];
+        var idx=(j*RGW+i)*4;
+        if(E<0){ img.data[idx]=8; img.data[idx+1]=14; img.data[idx+2]=26; img.data[idx+3]=42; continue; }
+        var L=Math.min(1, 0.30+0.45*E);
+        var px=i*scx+scx/2, py=j*scy+scy/2;   // 修复：用当前像素自身径向距离做1/r³衰减（原误用第一遍循环残留的角落坐标，使衰减恒为常数→外层不衰减过亮）
+        var dcy=ed(Math.hypot(px-CX,py-CY)/PXFM);
+        if(E>0.001){
+          img.data[idx]=255;
+          img.data[idx+1]=Math.round(145+85*L);
+          img.data[idx+2]=Math.round(70+60*L);
+        }else{
+          img.data[idx]=36; img.data[idx+1]=92; img.data[idx+2]=170;
+        }
+        img.data[idx+3]=Math.round((55+185*L)*dcy);
+      }
+    }
+    ripCtx.putImageData(img,0,0);
+    ctx.globalAlpha=0.88; ctx.drawImage(rip,0,0,W,H); ctx.globalAlpha=1;
+
+    // 第三遍：交叉点“磁压形变”——两能量层交叉处画沿源连线方向拉长的亮椭圆(挤压变形，随相位脉动)
+    var pulse=0.75+0.25*Math.sin(tphase*0.6);
+    var isLocalMax=function(i,j,E){
+      if(E<1.8) return false;
+      for(var dj=-1;dj<=1;dj++)for(var di=-1;di<=1;di++){
+        if(di===0&&dj===0)continue;
+        var ni=i+di, nj=j+dj;
+        if(ni<0||nj<0||ni>=RGW||nj>=RGH)continue;
+        if(Em[nj*RGW+ni]>E) return false;
+      }
+      return true;
+    };
+    for(var j=1;j<RGH-1;j++){
+      for(var i=1;i<RGW-1;i++){
+        var idxE=j*RGW+i, E=Em[idxE];
+        if(!isLocalMax(i,j,E)) continue;
+        var a=tp[idxE][0], b=tp[idxE][1];
+        if(a<0||b<0) continue;
+        var px=(i+0.5)*scx, py=(j+0.5)*scy;
+        var ang=Math.atan2(((sp[a][1]+sp[b][1])/2)-py, ((sp[a][0]+sp[b][0])/2)-px);
+        var edc=ed(Math.hypot(px-CX,py-CY)/PXFM);   // 修复：磁压形变椭圆也随半径 1/r³ 衰减，外层不再过亮过密
+        ctx.save(); ctx.translate(px,py); ctx.rotate(ang);
+        var len=17*pulse, wid=5*pulse;
+        var g=ctx.createRadialGradient(0,0,0,0,0,len);
+        g.addColorStop(0,'rgba(255,255,255,'+(0.9*edc).toFixed(3)+')');
+        g.addColorStop(0.4,'rgba(255,220,140,'+(0.7*edc).toFixed(3)+')');
+        g.addColorStop(1,'rgba(255,180,80,0)');
+        ctx.fillStyle=g;
+        ctx.beginPath(); ctx.ellipse(0,0,len,wid,0,0,6.283); ctx.fill();
+        ctx.restore();
+      }
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var g=ctx.createRadialGradient(CX,CY,20,CX,CY,H*0.6);
+    g.addColorStop(0,'#101a30'); g.addColorStop(1,'#070a14');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+    thm=t*speedMul*OMEGA_M;   // 8 源绕中心轴旋转（先算，供交叉场/水波/棱边/源使用）
+
+    // 硬核+指数尾电荷壳层（光滑指数云，承载主体电荷）——先铺底
+    drawChargeShell();
+
+    // 水波干涉层（10 源球状离散层交叉点/线，涟漪扩散）——先铺底，源与波带画在上面
+    if(chkRipple.checked) drawRipple();
+
+    // 10 波相干干涉交叉点（特殊点）
+    if(chkCross.checked) drawCrossField();
+
+    function projP(x,y,z){ return project(rot([x,y],thm).concat([z])); }
+
+    // 波带
+    if(chkWave.checked){
+      for(var i=0;i<8;i++){ var q=projP(mid3[i][0],mid3[i][1],midZ[i]); drawTrain(q[0],q[1],i); }
+      for(var i=0;i<2;i++){ var q=project([0,0,axisZ[i]]); drawTrain(q[0],q[1],10+i); }
+    }
+
+    // 10 源
+    function glowDot(px,py,color,r0,depth,extra){
+      var gd=ctx.createRadialGradient(px,py,0,px,py,r0*3);
+      gd.addColorStop(0,color); gd.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.globalAlpha=depth*0.9; ctx.fillStyle=gd; ctx.beginPath(); ctx.arc(px,py,r0*3,0,6.283); ctx.fill();
+      ctx.globalAlpha=depth; ctx.fillStyle=color; ctx.beginPath(); ctx.arc(px,py,r0,0,6.283); ctx.fill();
+      ctx.globalAlpha=1;
+      if(extra) extra();
+    }
+    for(var i=0;i<8;i++){
+      var q=projP(mid3[i][0],mid3[i][1],midZ[i]);
+      var depth=(midZ[i]>0)?0.95:0.8;
+      (function(px,py,idx){
+        glowDot(px,py,'#5aa7ff',4.5,depth,function(){
+          var pha=t*speedMul*OMEGA_M*2;    // 同频同相：所有源白点指向同一相位角
+          ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px+Math.cos(pha)*9,py+Math.sin(pha)*8,2,0,6.283); ctx.fill();
+        });
+      })(q[0],q[1]);
+    }
+    for(var i=0;i<2;i++){
+      if(i===1 && tilt<0.3) continue;   // 俯视时下轴源被上轴源挡住，只显示1个中心源
+      var q=project([0,0,axisZ[i]]);
+      var depth=(axisZ[i]>0)?1:0.85;
+      (function(px,py){
+        glowDot(px,py,'#4fe3c1',5.5,depth,function(){
+          var pha=t*speedMul*2*OMEGA_M;    // 同频同相：与8源同一相位角
+          ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px+Math.cos(pha)*12,py+Math.sin(pha)*10,2.6,0,6.283); ctx.fill();
+        });
+      })(q[0],q[1]);
+    }
+
+    ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.font='12px Microsoft YaHei';
+    ctx.fillText('● 蓝=8 立方体源(绕轴旋转,转速=轴自转1/2)   ○ 青=中心轴源(自转)   亮带=能量层55.4%  暗带=真空层44.6%',14,H-32);
+    ctx.font='11px Microsoft YaHei';
+    ctx.fillText('白点=相位(轴源ω_ax=2ω_m更快)；黄亮斑=10波相干干涉特殊交叉点；蓝白涟漪=水波干涉层(交叉面/线/点)',14,H-18);
+    ctx.fillText('说明：8源绕轴转(ω_m)、轴自转(2ω_m)；理论自洽示意，不等同于结构实验证实',14,H-4);  }
+
+  function loop(){
+    if(running){ t+=1/60*speedMul; }
+    draw();
+    requestAnimationFrame(loop);
+  }
+  btnPlay.addEventListener('click',function(){ running=!running; btnPlay.textContent=running?'暂停':'播放'; });
+  btnReset.addEventListener('click',function(){ t=0; });
+  speed.addEventListener('input',function(){ speedMul=parseFloat(speed.value); speedVal.textContent=speedMul.toFixed(1)+'×'; });
+  freq.addEventListener('input',function(){ freqMul=parseFloat(freq.value); freqVal.textContent=freqMul.toFixed(1)+'×'; });
+  viewEl.addEventListener('input',function(){ tilt=parseFloat(viewEl.value); viewVal.textContent=(tilt<0.05)?'俯视':(Math.round(tilt*180/Math.PI)+'°'); });
+  speedMul=1;
+  loop();
+}catch(e){
+  var d=document.createElement('div');
+  d.style.cssText='padding:20px;color:#fff;font-family:sans-serif';
+  d.textContent='动画初始化失败，请刷新页面。';
+  document.body.appendChild(d);
+}
+})();
+</script>
+</html>
