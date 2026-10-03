@@ -1,0 +1,135 @@
+<html style="margin:0;padding:0;">
+<title>波源理论 vs QCD 差异对照</title>
+<div id="app" style="width:100%;box-sizing:border-box;font-family:'Microsoft YaHei',Arial,sans-serif;background:#f4f6fa;padding:16px;color:#222;">
+<style>
+.wrap{max-width:1120px;margin:0 auto;}
+h1{font-size:22px;margin:0 0 4px;}
+.sub{font-size:13px;color:#666;margin:0 0 12px;}
+.core{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.core .c{flex:1 1 300px;background:#fff;border-left:4px solid;border-radius:6px;padding:10px 12px;font-size:14px;line-height:1.5;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.core .c b{display:block;font-size:14px;margin-bottom:4px;}
+.core .same{border-color:#2e7d32;}
+.core .diff{border-color:#c62828;}
+.core .map{border-color:#ef6c00;}
+.layout{display:flex;flex-wrap:wrap;gap:14px;}
+nav{flex:0 0 210px;display:flex;flex-direction:column;gap:4px;}
+nav button{display:block;width:100%;text-align:left;background:#fff;border:1px solid #dde2ea;border-radius:6px;padding:10px 12px;font-size:14px;cursor:pointer;color:#333;font-family:inherit;}
+nav button:hover{background:#eef2f8;}
+nav button.on{background:#1a56db;color:#fff;border-color:#1a56db;}
+nav button .tag{float:right;font-size:11px;opacity:.85;}
+main{flex:1 1 620px;background:#fff;border-radius:8px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07);min-height:340px;}
+main h2{font-size:18px;margin:0 0 2px;}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;color:#fff;margin:6px 0 10px;}
+.b-same{background:#2e7d32;}.b-diff{background:#c62828;}.b-map{background:#ef6c00;}
+.cols{display:flex;flex-wrap:wrap;gap:12px;}
+.box{flex:1 1 280px;border:1px solid #e2e6ee;border-radius:6px;padding:10px 12px;background:#fafbfd;}
+.box b{display:block;font-size:14px;margin-bottom:6px;}
+.box.w{border-top:3px solid #1a56db;} .box.q{border-top:3px solid #e67e22;}
+.box ul{margin:0;padding-left:18px;font-size:14px;line-height:1.6;}
+.box li{margin-bottom:2px;}
+.nums{margin-top:12px;background:#f0f4fb;border-radius:6px;padding:10px 14px;font-size:14px;line-height:1.7;}
+.nums b{color:#1a3c7a;}
+.open{margin-top:12px;background:#fdf6ec;border-left:3px solid #ef6c00;padding:8px 12px;font-size:13px;line-height:1.6;color:#6b4a00;}
+.legend{font-size:12px;color:#666;margin-top:8px;}
+.legend span{margin-right:14px;}
+@media(max-width:720px){ nav{flex:1 1 100%;flex-direction:row;flex-wrap:wrap;} nav button{flex:1 1 46%;} }
+</style>
+<div class="wrap">
+<h1>波源理论 vs QCD —— 全维度差异对照</h1>
+<p class="sub">波源理论 v3 知识库（ch01–ch28 + ch24 补充1–11）逐项对比。● 同构/复现 ● 根本差异 ● 映射/对应设定</p>
+
+<div class="core">
+  <div class="c same"><b>◉ 同构 / 数值复现</b>质量=多源场能、色中性禁闭、渐近自由对数跑动、强子谱源数映射、弦张力 σ≈1117 MeV/fm</div>
+  <div class="c diff"><b>◉ 根本差异</b>夸克之下还有波源；能量层传力（胶子不传力）；引力含入（G=Ck²、无暗物质）</div>
+  <div class="c map"><b>◉ 映射 / 对应设定</b>色=内部三态、胶球=交叉能、Regge=通量管旋转——能复现但几何来源未闭环</div>
+</div>
+
+<div class="layout">
+<nav id="nav"></nav>
+<main id="panel"><h2>加载中…</h2></main>
+</div>
+<div class="legend">图例：<span>◉ 同构/复现</span><span>◉ 根本差异</span><span>◉ 映射/对应设定</span></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+try{
+var D=[
+{id:"单元",t:"物质最小单元",type:"diff",badge:"根本差异",
+ wave:["波源：夸克之下还有结构——u=3、d=4、s=6、c=8、b=14 源（t 不成强子、不分配）","每个夸克=若干波源的空间排列","六种夸克从波源长出（源数∝质量序）"],
+ qcd:["夸克与胶子是 QCD 的基本自由度，不再有内部结构","夸克带色荷、六味 u/d/s/c/b/t，质量=拉格朗日量参数"],
+ num:["源数序 3<4<6<8<14 严格随夸克流质量递增（u≈2.2<d≈4.7<s≈92.9<c≈1.27<b≈4.18 GeV）","波源 μN 线性质量：u=3.88/d=5.17/s=7.76 MeV，只对 u/d 同量级、s 差~12 倍（开放）"],
+ open:["波源数由“基础结构≤10、组合有限、质量序”约束定，非第一性唯一解（c/b 简并）；μN 线性质量对重夸克不成立，需场能机制"]},
+{id:"质量",t:"质量本源",type:"same",badge:"同构/复现",
+ wave:["质量=多源干涉场能（ch20 E_pair 积分）+ m_c+μN","质子 10 源 E_tot=938.27 MeV（标定）","奇异重子 m=m_c+μN+εC（ε=25.37 MeV/交叉点，RMS 0.45 MeV）"],
+ qcd:["强子质量=组分质量+束缚能（夸克模型/格点 QCD）","质子质量~9 成来自胶子场能而非裸夸克"],
+ num:["质子 938.27 ✓；奇异重子 Λ/Σ/Ξ/Ω 全 1 MeV 内命中（ch19）","“越扁越重”族：Λ f=0.786→1116.3、Σ 0.696→1193.2、Ξ 0.544→1319.7（误差≤1.4）"],
+ open:["场能标定对准质子 938、非第一性绝对标度；能量层合并+逆级联的微观机制部分开放"]},
+{id:"引力",t:"引力来源",type:"diff",badge:"根本差异",
+ wave:["引力=发散型驻波场（真空负压层），G=Ck²=6.6737×10⁻¹¹","与成分无关→过 Eötvös 约束","泊松涨落替代暗物质：F∝√M/r、v∝M^¼、MOND 阈值"],
+ qcd:["标准模型不含引力；暗物质+暗能量由天体观测引入","QCD 只描述强相互作用"],
+ num:["k≈5.99×10²⁷ kg⁻¹、C=1.86×10⁻⁶⁶ → G≈6.67×10⁻¹¹ ✓","旋转曲线平化由波源数涨落解释，不需暗物质"],
+ open:["完整 GR（几何化）需新公理（ch12）；泊松涨落替代暗物质是候选解释"]},
+{id:"传力",t:"传力载体（强作用）",type:"diff",badge:"根本差异",
+ wave:["能量层（波场）传力——胶子不传力，胶子传力是假象（用户拍板）","F_强(r,Q)=g_eff²(Q)·F_c·N₁N₂·(d/r)e^{−r/d}","交叉点（胶子）只是能量层干涉的瞬时增强现象"],
+ qcd:["胶子=色+传力一体（非阿贝尔 SU(3) 规范场）","胶子自旋=1、三喷注、色力均实验验证"],
+ num:["能量层强度对数跑动复现 α_s：Q=200/500/1000→0.112/0.106/0.102 vs 实验 0.11/0.10/0.09","r=d 达峰（核力短程）、宏观极限退化回引力 F=C·N₁N₂/r²"],
+ open:["能量层“波场相干→力”的动量传递机制未定量追踪；需用能量层传力复现喷注内部结构（最后一道实证关）"]},
+{id:"色",t:"色（SU(3)）",type:"map",badge:"映射/对应设定",
+ wave:["色=波源内部三态（R/G/B），与源数解耦（用户确认）","SU(3) 代数=三源干涉+场干涉：3交叉线×2=6非对角 + 三源超荷=2对角 = 8 生成元","磁场线自耦合=3分量幺正混合→8（3²−1）"],
+ qcd:["色=SU(3) 规范对称性的色荷，三色三反色","胶子=色八重态（8 个）"],
+ num:["8 生成元全部无迹/厄米/线性独立/对易子封闭（代数验证 True）","口径A（三色混合）是唯一摸到 8 的口径（磁环=7、无散磁场=2）"],
+ open:["R/G/B 具体对应夸克源结构内哪三个自由度（相位/占位）未推——色=内部三态的微观来源仍开放"]},
+{id:"禁闭",t:"禁闭（无色规则）",type:"same",badge:"同构/复现",
+ wave:["无色=色通量闭合（净色=0）：重子 qqq（R+G+B）、介子 qq̄（R+R̄）→稳定","有色=通量发散（单/双/四夸克）→能量发散→瞬态消失","弦断裂+场能重组产对（ch28，不借施温格）"],
+ qcd:["只有色单态（无色）强子存在","色禁闭=色通量管/弦，拉开产生新夸克对（施温格）"],
+ num:["已知稳定强子全部无色（p10/n11/Δ9/Σ12/Ξ15/Ω18、π7/K9/φ12/ω14/η26）","σ_波源=1117 MeV/fm vs QCD 890（同量级）；E_release=938 恰好>轻夸克场能、<重夸克场能→能量阈值天然分割"],
+ open:["非无色态消失时间未定量；色通量与 ch28 弦断裂的完整衔接未闭环"]},
+{id:"as",t:"渐近自由 α_s",type:"same",badge:"同构/复现",
+ wave:["能量层有效强度对数 RG 跑动 g_eff=1/(b0·ln(Q/Λ))","低能禁闭区须 2-loop：Landau pole 在 Q≈647 MeV（禁闭尺度修复）","禁闭区 α_s 饱和（色通量管凝聚，凝聚点 Q_c≈285 MeV）"],
+ qcd:["α_s(Q²)=1/(b0·ln(Q²/Λ²)) 对数跑动，胶子反屏蔽","Λ_QCD(nf=3)≈330 MeV、禁闭区 α_s 格点 ~1-2"],
+ num:["高能 2-loop 与实验吻合（Q=200/500/1000）；禁闭尺度 647 vs 330 MeV 同量级","禁闭区质量生成自洽：σ·r_p=1117×0.84=938 MeV≈质子"],
+ open:["指数自吸收 e^{−κcE} 已被 α_s 数据证伪（改用对数）；禁闭区饱和值未从 σ 第一性推出；Λ 归一已统一（旧 0.022 作废）"]},
+{id:"谱",t:"强子谱",type:"map",badge:"映射/对应设定",
+ wave:["重子源数=Σ夸克源数、介子=qq̄源数之和（ch24补8 基态谱全映射）","激发态=Regge 轨迹（色通量管旋转）：M²=M0²+α'·(J−J0)，α'=1/(2πσ)","激发态与基态源数相同，质量差来自内部激发"],
+ qcd:["夸克模型：重子八重态+十重态、介子八重态+矢量九重态","Regge 轨迹 M²~J（弦），α'≈0.88–0.93 GeV⁻²"],
+ num:["基态源数 p10/n11/Λ13/…/Ω18；全谱无色","波源 α'=0.72 GeV⁻² vs QCD 0.91/实测~1.1 → 激发态偏低 ~200–500 MeV"],
+ open:["源数只数夸克组成、未含结构项/混合角；激发态 α' 偏小需修正 σ（若 σ→890 则 α'→0.91）；Roper 是径向激发非纯 Regge"]},
+{id:"胶球",t:"胶球",type:"map",badge:"映射/对应设定",
+ wave:["胶球=N=0 交叉能（纯交叉点、不含波源）","同一 ε=25.37 MeV/交叉点复现格点胶球谱：0⁺⁺≈1.6、2⁺⁺≈2.4、0⁻⁺≈2.5 GeV（≤12 MeV 偏差）"],
+ qcd:["胶球=纯胶子束缚态，QCD 明确预言、尚未确证观测","f₀(1370/1500/1710) 候选 ~1.5–1.7 GeV"],
+ num:["解释A C_g=27/58/62 → 1610/2397/2498 GeV（偏差 +10/−3/−2）","解释B C_g=63/95/99 → 1598/2410/2512 GeV（偏差 −2/+10/+12）"],
+ open:["C_g 是指派非推导；胶球交叉点数的几何来源未定（能复现、未闭环）"]},
+{id:"中微子",t:"中微子 / 虚拟粒子",type:"map",badge:"映射/对应设定",
+ wave:["真实粒子=含波源（介子/重子/奇异多夸克）；虚拟粒子=不含源（磁场线切割→闭合环=胶球）","中微子=典型单波源粒子"],
+ qcd:["中微子=轻子，特殊处理；胶子=虚粒子海","π 等强子=夸克束缚态"],
+ num:["v7 的 π≈136.6（闭合环）命中已修正归属：π 是含源真实介子，该命中归巧合/虚拟粒子线"],
+ open:["π 归属修正后，闭合环机制只服务胶球（虚拟粒子线），不含源】"]},
+{id:"暗物质",t:"暗物质 / 宇宙学",type:"diff",badge:"根本差异",
+ wave:["无需暗物质：弱场泊松涨落替代（波源数涨落）","旋转曲线平化、塔利-费舍尔关系、MOND 阈值 a₀≈10⁻¹⁰ m/s²"],
+ qcd:["暗物质由宇宙学/天体观测引入，粒子物理尚无确定候选","标准模型不含暗物质粒子"],
+ num:["F∝√M/r（涨落）解释星系尺度；阈值与 MOND 数值一致","n/p 质量比=1.0014、Eötvös 通过（与成分无关）"],
+ open:["泊松涨落替代暗物质是候选解释，星系团尺度（子弹星系团）定量未闭环"]}
+];
+var icons={same:"◉",diff:"◉",map:"◉"};
+function badge(t){var c=t==="same"?"b-same":(t==="diff"?"b-diff":"b-map");return '<span class="badge '+c+'">'+ (t==="same"?"同构 / 数值复现":(t==="diff"?"根本差异":"映射 / 对应设定")) +'</span>';}
+function ls(arr,lab){return '<div class="box '+(lab==="波源理论"?"w":"q")+'"><b>'+lab+'</b><ul>'+arr.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul></div>';}
+function render(id){
+ var d=D.filter(function(x){return x.id===id;})[0];
+ document.getElementById("panel").innerHTML=
+  '<h2>'+d.t+'</h2>'+badge(d.type)+
+  '<div class="cols">'+ls(d.wave,"波源理论")+ls(d.qcd,"QCD")+'</div>'+
+  '<div class="nums"><b>数值 / 关键量</b><br>'+d.num.join("<br>")+'</div>'+
+  '<div class="open"><b>诚实开放 / 差异点</b><br>'+d.open+'</div>';
+ var btns=document.querySelectorAll("#nav button");
+ for(var i=0;i<btns.length;i++)btns[i].className=btns[i].getAttribute("data-id")===id?"on":"";
+}
+var nav=document.getElementById("nav");
+nav.innerHTML=D.map(function(d){return '<button data-id="'+d.id+'">'+d.t+' <span class="tag">'+icons[d.type]+'</span></button>';}).join("");
+nav.querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){render(b.getAttribute("data-id"));});});
+render("单元");
+}catch(e){document.getElementById("panel").innerHTML='<h2>波源理论 vs QCD 对照</h2><div style="font-size:14px;line-height:1.7">'+((e&&e.message)||"加载失败")+'</div>';}
+})();
+</script>
+</html>
