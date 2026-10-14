@@ -1,4 +1,9 @@
 # gewenxing-vacuum-gravity
+## 2026-10-14 发布（磁自能组装六锚全记录）
+- 汇总全记录：[波源理论_2026-10-14_磁自能组装六锚全记录与决策时间线.md](波源理论_2026-10-14_磁自能组装六锚全记录与决策时间线.md)
+- 脚本集：`scripts/波源理论_2026-10-14_磁自能组装_脚本集_20261014_1920.zip`（18 个验证脚本）
+- **Zenodo DOI：[10.5281/zenodo.23367835](https://zenodo.org/records/23367835)**（v1, Preprint, CC-BY-4.0）
+- ORCID：https://orcid.org/0009-0001-6396-9762（Works 已关联）
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22994259.svg)](https://doi.org/10.5281/zenodo.22994259)
 
